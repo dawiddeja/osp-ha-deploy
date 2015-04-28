@@ -6,6 +6,7 @@ from pipes import quote
 sys.path.append("/usr/share/fence")
 from fencing import *
 from fencing import fail_usage, is_executable, run_command, run_delay
+import subprocess
 
 #BEGIN_VERSION_GENERATION
 RELEASE_VERSION="4.0.11"
@@ -73,9 +74,9 @@ def set_power_status(_, options):
                 # storage in use, then they get what they asked for
                 evacuate += " --on-shared-storage"
 
-        evacuate += " --host " + options["--plug"]
+        evacuate += options["--plug"]
 
-        (ret, stdout, stderr) = run_command(options, create_command(options, evacuate))
+        subprocess.Popen(['async_evacuate.py', options["--plug"], create_command(options, evacuate)])
 
         return
 
