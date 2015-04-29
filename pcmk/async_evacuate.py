@@ -5,6 +5,8 @@ import threading
 import logging
 import shlex
 import sys
+sys.path.append("/usr/share/fence")
+from fencing import SyslogLibHandler
 
 
 class AsyncEvacuate():
@@ -16,7 +18,6 @@ class AsyncEvacuate():
         :return: None
         """
 
-        logging.basicConfig(filename='/tmp/async_evacuate.log', level=logging.DEBUG)
         self._hostname = str(hostname)
         self._command = command
         self._timeout = timeout
@@ -106,7 +107,11 @@ class AsyncEvacuate():
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger().addHandler(SyslogLibHandler())
+
     if len(sys.argv) != 3:
+        logging.info("Not enough parameters")
         sys.exit(1)
 
     hostname, command = sys.argv[1:]
